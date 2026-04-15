@@ -1,0 +1,274 @@
+/* Configurações Gerais */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container do Login e do Card de Consulta */
+.card-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 400px;
+    margin-top: 50px;
+}
+
+/* Estilização dos Inputs */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: #65676b;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Campos apenas de leitura (Consulta) */
+.readonly-field {
+    background-color: #f8f9fa;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+/* Botões */
+.btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 15px;
+}
+
+
+/*Tela consult*/
+
+/* Configurações Gerais - Mantém o padrão do projeto */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h2 {
+    color: #1c1e21;
+    margin-bottom: 20px;
+}
+
+/* O "Card" centralizado - Responsivo */
+.card-container {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;    
+}
+
+/* Grupos de formulário */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: #65676b;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Estilo para Inputs (Login) e Divs de Leitura (Consulta) */
+input, .readonly-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+/* Destaque para campos de leitura na tela de Consulta */
+.readonly-field {
+    background-color: #f8f9fa; /* Cinza bem claro para indicar que não é editável */
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+/* Campo de ID em destaque (como você pediu) */
+.id-badge {
+    background-color: #e4e6eb;
+    font-family: monospace;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botão Principal */
+.btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Rodapé informativo */
+.footer-text {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Estilo para campos de texto longo (textarea) */
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical; /* Permite aumentar a altura, mas não a largura */
+}
+
+/* Área onde o QR Code aparecerá após salvar */
+.display-qrcode-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    min-height: 150px; /* Garante que o espaço já exista antes da imagem */
+}
+
+.display-qrcode-area img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para o código numérico logo abaixo do QR */
+.id-display {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 3px;
+    background: #eee;
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+
+/* Botão secundário (para Gerar e Imprimir) */
+.btn-secondary {
+    width: 100%;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Adicione isso se quiser um destaque para o campo que não pode ser mudado */
+.label-info {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1a73e8; /* Um azul para indicar informação do sistema */
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Botão de destaque para abrir a câmera */
+.btn-scanner {
+    background-color: #343a40;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Divisória para separar a busca manual */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: #888;
+    font-size: 14px;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.divider:not(:empty)::before { margin-right: .25em; }
+.divider:not(:empty)::after { margin-left: .25em; }

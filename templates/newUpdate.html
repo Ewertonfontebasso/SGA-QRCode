@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Nova Atualização</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    
+    <div class="card-container">
+        <form>
+            <div class="form-group">
+                <label>Equipamento</label>
+                <div class="readonly-field">
+                    Roteador Cisco 2900 
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data da Atualização</label>
+                <input type="text" id="data_auto" class="readonly-field" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Resumo da Manutenção / Alteração</label>
+                <textarea id="resumo_atualizacao" rows="6" placeholder="Descreva o que foi feito no equipamento..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">Salvar Atualização</button>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/" style="font-size: 14px; color: #666; text-decoration: none;">← Cancelar e Voltar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Função para pegar data e hora real
+        function carregarDataAtualizacao() {
+            const agora = new Date();
+            const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('data_auto').value = formatada;
+        }
+        carregarDataAtualizacao();
+    </script>
+
+</body>
+</html>

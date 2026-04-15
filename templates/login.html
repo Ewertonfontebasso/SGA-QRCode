@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>SGA - Login</title>   
+</head>
+<body>
+
+   <div class="card-container">
+    <div class="logo-placeholder">LOGO</div>
+    
+    <form>
+        <div class="form-group">
+            <label>RE</label>
+            <input type="text" inputmode="numeric" maxlength="8" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" maxlength="10" required>
+        </div>
+        
+        <button type="submit" class="btn-primary">Login</button>
+    </form>
+    
+    <button class="btn-link">Esqueci a senha</button>
+</div>
+
+<p>SGA - Sistema de Gestão de Ativos</p>
+
+</body>
+</html>

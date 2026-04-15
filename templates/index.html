@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Sistema de Gestão de Ativos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="card-container">
+
+        <div class="logo-placeholder">LOGO</div>
+        
+        <div style="margin-bottom: 10px;">
+            <a href="/newAsset">
+                <button class="btn-primary">Cadastrar novo Equipamento</button>
+            </a>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <button class="btn-primary" onclick="abrirCamera()">Ler QRCODE</button>
+        </div>        
+
+        <form action="/pesquisar" method="POST">
+            <div class="form-group">
+                <label>Codigo do Ativo</label>
+                <input type="text" name="id_busca" inputmode="numeric" maxlength="8" required>
+            </div>
+            <button type="submit" class="btn-primary">Pesquisar Codigo</button>
+        </form>
+        
+    </div>
+   
+    <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
+
+    <script>
+        function abrirCamera() {
+            alert("Acessando a câmera do dispositivo...");
+            // Aqui entrará a biblioteca de leitura de QR Code
+        }
+    </script>
+
+</body>
+</html>

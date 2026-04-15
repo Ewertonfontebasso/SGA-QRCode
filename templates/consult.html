@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Consulta de Ativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>    
+
+    <div class="card-container">
+        <div class="logo-placeholder">LOGO</div>
+
+        <h2>Consulta de Ativo</h2>
+        
+        <div class="form-group">
+            <label>ID do QRCODE</label>
+            <div class="readonly-field id-badge">
+                {{ id_ativo }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Equipamento</label>
+            <div class="readonly-field">
+                {{ nome }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Data Última Atualização</label>
+            <div class="readonly-field">
+                {{ data }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Resumo</label>
+            <div class="readonly-field" style="min-height: 100px; align-items: flex-start;">
+                {{ resumo }}
+            </div>
+        </div>
+
+        <button class="btn-primary">Nova Atualização</button>
+
+    </div>
+
+    <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
+
+</body>
+</html>
