@@ -272,3 +272,102 @@ textarea {
 
 .divider:not(:empty)::before { margin-right: .25em; }
 .divider:not(:empty)::after { margin-left: .25em; }
+
+
+/* Configuração do Menu Lateral */
+.sidenav {
+    height: 100%;
+    width: 0; /* Começa fechado */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 32px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover { color: #f1f1f1; }
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.user-info {
+    padding: 0 32px 20px 32px;
+    color: white;
+}
+
+/* Posicionamento do Menu no topo esquerdo */
+.hamburger-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #333;
+    z-index: 10; /* Garante que fique acima de tudo */
+}
+
+.logo-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.logo-circular {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.logo-circular img {
+    max-width: 90%;
+    max-height: 90%;
+    height: auto;
+    width: auto;
+}
+
+/* Estilo dos Quadros (Cards) */
+.card-section {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 350px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px; /* Separação entre os dois quadros */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* Container principal para centralizar os cards */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px; /* Espaço para o menu não cobrir o conteúdo */
+    gap: 20px; /* Espaço entre os cartões */
+}

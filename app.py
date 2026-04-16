@@ -1,62 +1,64 @@
-from flask import Flask, render_template
+# Adicione 'redirect' e 'url_for' nesta linha
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-import os  #Importar o 'os' aqui no topo
+import os
 
 app = Flask(__name__)
 
-# A função buscar_dados_do_banco fica aqui no meio
-def buscar_dados_do_banco():
 
-    caminho_diretorio = os.path.dirname(os.path.abspath(__file__))
-    caminho_banco = os.path.join(caminho_diretorio, 'banco_ativos.db')
-    
-    conexao = sqlite3.connect(caminho_banco)
-    cursor = conexao.cursor()
-    
-    try:
-        cursor.execute("SELECT nome, data_atualizacao, resumo FROM ativos LIMIT 1")
-        dado = cursor.fetchone()
-    except sqlite3.OperationalError:
-        dado = ("Tabela não encontrada", "N/A", "Rode o criar_banco.py novamente")
-    
-    conexao.close()
-    return dado
+# Função auxiliar para conectar no banco
+def conectar_banco():
+    caminho_banco = os.path.join(os.path.dirname(__file__), 'banco_ativos.db')
+    return sqlite3.connect(caminho_banco)
 
-#A rota que o navegador acessa
 @app.route('/')
-def home():
-    dados_do_ativo = buscar_dados_do_banco()
-    
-    if dados_do_ativo:
-        # Note que adicionamos 'id_ativo' aqui embaixo
-        id_formatado = f"{1:05d}"
-        return render_template('consult.html', 
-                               nome=dados_do_ativo[0], 
-                               data=dados_do_ativo[1], 
-                               resumo=dados_do_ativo[2],
-                               id_ativo=id_formatado) 
-    else:
-        return "Banco de dados vazio!"
-@app.route('/login')
-def login():
-    return render_template('login.html')    
-
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    # ID de teste que criamos no banco
+    ID_LOGADO = '123456789'
+    
+    conexao = sqlite3.connect('banco_ativos.db')
+    cursor = conexao.cursor()
+    
+    # Busca nome e nível baseados no ID de 9 dígitos
+    cursor.execute("SELECT nome_exibicao, nivel FROM usuarios WHERE id_usuario = ?", (ID_LOGADO,))
+    usuario = cursor.fetchone()
+    conexao.close()
 
-@app.route('/consult')
+    if usuario:
+        return render_template('index.html', user_nome=usuario[0], user_nivel=usuario[1])
+    return render_template('index.html', user_nome="Convidado", user_nivel="N/A")
+
+@app.route('/consult', methods=['POST'])
 def consult():
-    return render_template('consult.html')
+    id_buscado = request.form.get('id_busca')
+
+    # Busca no SQLite em vez do dicionário
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id_ativo, nome, data_atualizacao, resumo FROM ativos WHERE id_ativo = ?", (id_buscado,))
+    resultado = cursor.fetchone()
+    conn.close()
+
+    if resultado:
+        # Retorna os dados do banco para o seu HTML
+        return render_template('consult.html', 
+                               id_ativo=resultado[0], 
+                               nome=resultado[1], 
+                               data=resultado[2], 
+                               resumo=resultado[3])
+    else:
+        return redirect('/index?erro=inexistente')
+
+# Outras rotas (mantenha como estão)
+@app.route('/login')
+def login(): return render_template('login.html')
 
 @app.route('/newAsset')
-def newAsset():
-    return render_template('newAsset.html')
+def newAsset(): return render_template('newAsset.html')
 
 @app.route('/newUpdate')
-def newUpdate():
-    return render_template('newUpdate.html')                
+def newUpdate(): return render_template('newUpdate.html')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
-

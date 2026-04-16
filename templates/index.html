@@ -6,38 +6,74 @@
     <title>SGA - Sistema de Gestão de Ativos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="bg-light">
 
-    <div class="card-container">
+    <div id="menuSide" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="user-info">
+            <p><strong>Usuário:</strong> {{ user_nome }}</p>
+            <p style="font-size: 0.8em; color: #888;">Nível: {{ user_nivel }}</p>
+            <p style="font-size: 0.7em; color: #555;">ID: 123456789</p>
+        </div>
+        <hr>
+        <a href="/index">Início</a>
+        <a href="/newAsset">Novo Ativo</a>
+        <a href="/login" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
+    </div>
 
-        <div class="logo-placeholder">LOGO</div>
+    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
+
+    <div class="main-container">
         
-        <div style="margin-bottom: 10px;">
-            <a href="/newAsset">
+        <div class="logo-wrapper">
+            <div class="logo-circular">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+            </div>
+        </div>
+
+        <div class="card-section">
+            <a href="/newAsset" style="text-decoration: none; width: 100%;">
                 <button class="btn-primary">Cadastrar novo Equipamento</button>
             </a>
         </div>
 
-        <div style="margin-bottom: 10px;">
-            <button class="btn-primary" onclick="abrirCamera()">Ler QRCODE</button>
-        </div>        
+        <div class="card-section">
+            <button class="btn-primary" onclick="abrirCamera()" style="margin-bottom: 15px;">
+                Ler QRCODE
+            </button>
 
-        <form action="/pesquisar" method="POST">
-            <div class="form-group">
-                <label>Codigo do Ativo</label>
-                <input type="text" name="id_busca" inputmode="numeric" maxlength="8" required>
-            </div>
-            <button type="submit" class="btn-primary">Pesquisar Codigo</button>
-        </form>
-        
+            <form action="/consult" method="POST">
+                <div class="form-group" style="text-align: left;">
+                    <label style="font-weight: bold; color: #555; font-size: 0.9em;">Código do Ativo</label>
+                    <input type="text" name="id_busca" inputmode="numeric" maxlength="5" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;">
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top: 15px;">Pesquisar Código</button>
+            </form>
+        </div>
+
+        <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
     </div>
-   
-    <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
 
     <script>
         function abrirCamera() {
             alert("Acessando a câmera do dispositivo...");
-            // Aqui entrará a biblioteca de leitura de QR Code
+        }
+
+        // Verifica erro na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('erro') === 'inexistente') {
+            alert("Código inexistente ou não identificado!");
+            window.history.replaceState({}, document.title, "/index");
+        }
+
+        // Funções do Menu
+        function openNav() {
+            document.getElementById("menuSide").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("menuSide").style.width = "0";
         }
     </script>
 
