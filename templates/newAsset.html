@@ -6,48 +6,120 @@
     <title>SGA - Novo Cadastro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    
-    <div class="card-container">
-        <div class="form-group">
-            <label>Equipamento</label>
-            <input type="text" id="equipamento" placeholder="Nome do ativo">
+<body class="bg-light">
+
+    <div id="menuSide" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="user-info">
+            <p><strong>Usuário:</strong> {{ user_nome if user_nome else 'Técnico' }}</p>
+            <p style="font-size: 0.8em; color: #888;">ID: 123456789</p>
         </div>
+        <hr>
+        <a href="/index">Início</a>
+        <a href="/newAsset">Novo Ativo</a>
+        <a href="/login" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
+    </div>
 
-        <div class="form-group">
-            <label>Data</label>
-            <input type="text" id="data_dispositivo" class="readonly-field" readonly>
-        </div>
+    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
 
-        <div class="form-group">
-            <label>Descrição do que foi feito</label>
-            <textarea id="descricao" rows="4" placeholder="Relatório técnico..."></textarea>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-
-        <label style="text-align: center; display: block;">Identificação Gerada</label>
-        <div class="display-qrcode-area">
-            <div style="color: #ccc; font-size: 14px;">O QR Code aparecerá aqui após salvar</div>
-            </div>
-
-        <div style="text-align: center; margin-bottom: 20px;">
-            <span class="id-display">00000</span>
-        </div>
-
-        <button class="btn-primary">Salvar</button>
+    <div class="main-container">
         
-        <button class="btn-primary" style="background-color: #28a745; margin-top: 10px;">
-            Imprimir QRCODE com CODIGO
-        </button>
+        <div class="logo-wrapper">
+            <div class="logo-circular">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
+            SGA - Sistema de Gestão de Ativos
+        </h2>
+
+        <div class="card-container" style="margin-top: 0; width: 100%; max-width: 450px;">
+            <form action="/newAsset" method="POST">
+                
+                <div class="form-group">
+                    <label style="font-weight: bold;">Equipamento</label>
+                    <input type="text" name="equipamento" placeholder="Nome do ativo" 
+                           value="{{ nome if nome else '' }}" {{ 'readonly' if sucesso }} required
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;">
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="font-weight: bold;">Data</label>
+                    <input type="text" id="data_dispositivo" class="readonly-field" value="{{ data if data else '' }}" readonly
+                           style="width: 100%; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="hidden" name="data_escondida" id="data_escondida">
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="font-weight: bold;">Descrição Técnica</label>
+                    <textarea name="descricao" rows="4" placeholder="Relatório técnico..." {{ 'readonly' if sucesso }}
+                              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">{{ descricao if descricao else '' }}</textarea>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+                <label style="text-align: center; display: block; font-weight: bold; color: #555;">
+                    {{ 'Identificação Gerada' if sucesso else 'Aguardando Identificação' }}
+                </label>
+                
+                <div class="display-qrcode-area" style="text-align: center; margin: 15px 0;">
+                    {% if sucesso %}
+                        <img src="{{ qr_code }}" alt="QR Code" style="width: 150px; height: 150px; border: 1px solid #ddd; padding: 5px;">
+                    {% else %}
+                        <div style="color: #ccc; font-size: 14px; padding: 40px; border: 2px dashed #eee; border-radius: 10px;">
+                            O QR Code aparecerá aqui após salvar
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <span class="id-display" style="font-size: 2.2rem; font-weight: bold; color: #007bff; letter-spacing: 2px;">
+                        {{ id_ativo if id_ativo else '00000' }}
+                    </span>
+                </div>
+
+                {% if not sucesso %}
+                    <button type="submit" class="btn-primary">Salvar Equipamento</button>
+                {% endif %}
+            </form>
+            
+            {% if sucesso %}
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                    <button class="btn-primary" style="background-color: #28a745;" onclick="window.print()">
+                        Imprimir QRCODE com CODIGO
+                    </button>
+                    
+                    <a href="/newAsset" style="text-decoration: none; width: 100%;">
+                        <button class="btn-primary" style="background-color: #6c757d; width: 100%;">
+                            + Novo Cadastro
+                        </button>
+                    </a>
+
+                    <a href="/index" style="text-decoration: none; text-align: center; margin-top: 10px;">
+                        <span style="color: #007bff; font-size: 0.9em; font-weight: bold;">
+                            &larr; Voltar ao Menu Principal
+                        </span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
     </div>
 
     <script>
-        // Puxar data automática do sistema
+        // Funções do Menu
+        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
+        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
+
+        // Data Automática
         function atualizarData() {
-            const agora = new Date();
-            const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('data_dispositivo').value = formatada;
+            const campoData = document.getElementById('data_dispositivo');
+            if (campoData.value === "") {
+                const agora = new Date();
+                const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                campoData.value = formatada;
+                document.getElementById('data_escondida').value = formatada;
+            }
         }
         atualizarData();
     </script>

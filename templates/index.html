@@ -31,6 +31,10 @@
             </div>
         </div>
 
+        <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
+            SGA - Sistema de Gestão de Ativos
+        </h2>
+
         <div class="card-section">
             <a href="/newAsset" style="text-decoration: none; width: 100%;">
                 <button class="btn-primary">Cadastrar novo Equipamento</button>
@@ -52,30 +56,18 @@
             </form>
         </div>
 
-        <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
+        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
     </div>
 
     <script>
-        function abrirCamera() {
-            alert("Acessando a câmera do dispositivo...");
-        }
-
-        // Verifica erro na URL
+        function abrirCamera() { alert("Acessando a câmera..."); }
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('erro') === 'inexistente') {
-            alert("Código inexistente ou não identificado!");
+            alert("Código inexistente!");
             window.history.replaceState({}, document.title, "/index");
         }
-
-        // Funções do Menu
-        function openNav() {
-            document.getElementById("menuSide").style.width = "250px";
-        }
-
-        function closeNav() {
-            document.getElementById("menuSide").style.width = "0";
-        }
+        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
+        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
     </script>
-
 </body>
 </html>
