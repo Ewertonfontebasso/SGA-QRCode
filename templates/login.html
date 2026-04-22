@@ -3,32 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA - Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>SGA - Login</title>   
 </head>
-<body>
+<body class="bg-light">
 
-   <div class="card-container">
-    <div class="logo-placeholder">LOGO</div>
-    
-    <form>
-        <div class="form-group">
-            <label>RE</label>
-            <input type="text" inputmode="numeric" maxlength="8" required>
+    <div class="main-container">
+        <div class="logo-wrapper">
+            <div class="logo-circular">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label>Senha</label>
-            <input type="password" maxlength="10" required>
+
+        <div class="card-container">
+            <h2 style="margin-bottom: 20px;">Acesso ao Sistema</h2>
+            
+            {% if erro %}
+                <p style="color: #dc3545; font-weight: bold; margin-bottom: 15px;">{{ erro }}</p>
+            {% endif %}
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label>ID do Usuário</label>
+                    <input type="text" name="id_usuario" placeholder="Digite seu ID" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" name="senha" placeholder="******" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
         </div>
-        
-        <button type="submit" class="btn-primary">Login</button>
-    </form>
-    
-    <button class="btn-link">Esqueci a senha</button>
-</div>
-
-<p>SGA - Sistema de Gestão de Ativos</p>
-
+        <p class="footer-text">SGA v1.0</p>
+    </div>
 </body>
 </html>
