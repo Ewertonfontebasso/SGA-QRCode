@@ -40,12 +40,18 @@ def index():
         return render_template('index.html', user_nome=usuario[0], user_nivel=usuario[1])
     return render_template('index.html', user_nome="Convidado", user_nivel="N/A")
 
+# Rota de Consulta (Via formulário POST)
 @app.route('/consult', methods=['POST'])
 def consult():
     id_buscado = request.form.get('id_busca')
+    return redirect(url_for('consult_get', id_ativo=id_buscado))
+
+# Rota de exibição dos detalhes (GET)
+@app.route('/consult/<id_ativo>')
+def consult_get(id_ativo):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute("SELECT id_ativo, nome, data_atualizacao, resumo FROM ativos WHERE id_ativo = ?", (id_buscado,))
+    cursor.execute("SELECT id_ativo, nome, data_atualizacao, resumo FROM ativos WHERE id_ativo = ?", (id_ativo,))
     resultado = cursor.fetchone()
     conn.close()
 
@@ -55,8 +61,7 @@ def consult():
                                nome=resultado[1], 
                                data=resultado[2], 
                                resumo=resultado[3])
-    else:
-        return redirect('/index?erro=inexistente')
+    return redirect('/index?erro=inexistente')
 
 @app.route('/newAsset', methods=['GET', 'POST'])
 def newAsset():
@@ -67,7 +72,6 @@ def newAsset():
 
         id_gerado = gerar_id_unico()
 
-        # Garante que a pasta de QR Codes existe
         pasta_qr = os.path.join('static', 'qrcodes')
         if not os.path.exists(pasta_qr):
             os.makedirs(pasta_qr)
@@ -76,7 +80,6 @@ def newAsset():
         img = qrcode.make(id_gerado)
         img.save(caminho_qr)
 
-        # Salva no Banco
         conn = conectar_banco()
         cursor = conn.cursor()
         cursor.execute("INSERT INTO ativos (id_ativo, nome, data_atualizacao, resumo) VALUES (?, ?, ?, ?)",
@@ -94,14 +97,52 @@ def newAsset():
 
     return render_template('newAsset.html', sucesso=False)
 
+# Rota para abrir a tela de atualização carregando os dados do ativo
+@app.route('/newUpdate/<id_ativo>')
+def newUpdate(id_ativo):
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nome FROM ativos WHERE id_ativo = ?", (id_ativo,))
+    ativo = cursor.fetchone()
+    conn.close()
+    
+    if ativo:
+        return render_template('newUpdate.html', id_ativo=id_ativo, nome=ativo[0])
+    return redirect('/index?erro=inexistente')
+
+# Rota que processa o salvamento do histórico acumulativo
+@app.route('/saveUpdate', methods=['POST'])
+def saveUpdate():
+    id_ativo = request.form.get('id_ativo')
+    nova_data = request.form.get('data_escondida')
+    novo_texto = request.form.get('resumo_atualizacao')
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    
+    # 1. Busca o histórico antigo
+    cursor.execute("SELECT resumo FROM ativos WHERE id_ativo = ?", (id_ativo,))
+    resultado = cursor.fetchone()
+    resumo_antigo = resultado[0] if resultado[0] else ""
+
+    # 2. Cria o novo bloco de texto (Nova info no TOPO)
+    historico_atualizado = f"{nova_data}\n{novo_texto}\n\n{resumo_antigo}"
+
+    # 3. Faz o Update no banco
+    cursor.execute("UPDATE ativos SET resumo = ?, data_atualizacao = ? WHERE id_ativo = ?", 
+                   (historico_atualizado, nova_data, id_ativo))
+    
+    conn.commit()
+    conn.close()
+    
+    # Redireciona para a tela de consulta para ver o histórico novo
+    return redirect(url_for('consult_get', id_ativo=id_ativo))
+
 @app.route('/login')
 def login(): 
     return render_template('login.html')
 
-@app.route('/newUpdate')
-def newUpdate(): 
-    return render_template('newUpdate.html')
+# --- FINALIZAÇÃO ---
 
-# O app.run SEMPRE deve ser a última coisa do arquivo
 if __name__ == '__main__':
     app.run(debug=True)

@@ -23,7 +23,6 @@
     <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
 
     <div class="main-container">
-        
         <div class="logo-wrapper">
             <div class="logo-circular">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
@@ -36,7 +35,6 @@
 
         <div class="card-container" style="margin-top: 0; width: 100%; max-width: 450px;">
             <form action="/newAsset" method="POST">
-                
                 <div class="form-group">
                     <label style="font-weight: bold;">Equipamento</label>
                     <input type="text" name="equipamento" placeholder="Nome do ativo" 
@@ -59,62 +57,65 @@
 
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-                <label style="text-align: center; display: block; font-weight: bold; color: #555;">
-                    {{ 'Identificação Gerada' if sucesso else 'Aguardando Identificação' }}
-                </label>
-                
-                <div class="display-qrcode-area" style="text-align: center; margin: 15px 0;">
-                    {% if sucesso %}
-                        <img src="{{ qr_code }}" alt="QR Code" style="width: 150px; height: 150px; border: 1px solid #ddd; padding: 5px;">
-                    {% else %}
-                        <div style="color: #ccc; font-size: 14px; padding: 40px; border: 2px dashed #eee; border-radius: 10px;">
-                            O QR Code aparecerá aqui após salvar
-                        </div>
-                    {% endif %}
-                </div>
+                <div class="printable-area">
+                    <label style="text-align: center; display: block; font-weight: bold; color: #555;">
+                        {{ 'Identificação Gerada' if sucesso else 'Aguardando Identificação' }}
+                    </label>
+                    
+                    <div class="display-qrcode-area" style="text-align: center; margin: 15px 0;">
+                        {% if sucesso %}
+                            <img src="{{ qr_code }}" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #eee; padding: 5px;">
+                        {% else %}
+                            <div style="color: #ccc; font-size: 14px; padding: 40px; border: 2px dashed #eee; border-radius: 10px;">
+                                O QR Code aparecerá aqui após salvar
+                            </div>
+                        {% endif %}
+                    </div>
 
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <span class="id-display" style="font-size: 2.2rem; font-weight: bold; color: #007bff; letter-spacing: 2px;">
-                        {{ id_ativo if id_ativo else '00000' }}
-                    </span>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="id-display" style="font-size: 2.2rem; font-weight: bold; color: #007bff; letter-spacing: 2px;">
+                            {{ id_ativo if id_ativo else '00000' }}
+                        </span>
+                    </div>
                 </div>
-
                 {% if not sucesso %}
                     <button type="submit" class="btn-primary">Salvar Equipamento</button>
+                    <div style="margin-top: 10px;">
+                        <a href="/index" class="btn-link">
+                            <button type="button" class="btn-secondary">Cancelar e Voltar</button>
+                        </a>
+                    </div>
                 {% endif %}
             </form>
             
             {% if sucesso %}
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
                     <button class="btn-primary" style="background-color: #28a745;" onclick="window.print()">
-                        Imprimir QRCODE com CODIGO
+                        Imprimir Etiqueta
                     </button>
                     
-                    <a href="/newAsset" style="text-decoration: none; width: 100%;">
-                        <button class="btn-primary" style="background-color: #6c757d; width: 100%;">
+                    <a href="/newAsset" class="btn-link">
+                        <button type="button" class="btn-primary" style="background-color: #6c757d;">
                             + Novo Cadastro
                         </button>
                     </a>
 
-                    <a href="/index" style="text-decoration: none; text-align: center; margin-top: 10px;">
-                        <span style="color: #007bff; font-size: 0.9em; font-weight: bold;">
-                            &larr; Voltar ao Menu Principal
-                        </span>
+                    <a href="/index" class="btn-link">
+                        <button type="button" class="btn-secondary">Voltar ao Menu</button>
                     </a>
                 </div>
             {% endif %}
         </div>
+        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
     </div>
 
     <script>
-        // Funções do Menu
         function openNav() { document.getElementById("menuSide").style.width = "250px"; }
         function closeNav() { document.getElementById("menuSide").style.width = "0"; }
 
-        // Data Automática
         function atualizarData() {
             const campoData = document.getElementById('data_dispositivo');
-            if (campoData.value === "") {
+            if (campoData && campoData.value === "") {
                 const agora = new Date();
                 const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 campoData.value = formatada;
@@ -123,6 +124,5 @@
         }
         atualizarData();
     </script>
-
 </body>
 </html>

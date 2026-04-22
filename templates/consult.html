@@ -6,46 +6,85 @@
     <title>SGA - Consulta de Ativo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>    
+<body class="bg-light">
 
-    <div class="card-container">
-        <div class="logo-placeholder">LOGO</div>
-
-        <h2>Consulta de Ativo</h2>
-        
-        <div class="form-group">
-            <label>ID do QRCODE</label>
-            <div class="readonly-field id-badge">
-                {{ id_ativo }}
-            </div>
+    <div id="menuSide" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="user-info">
+            <p><strong>Usuário:</strong> {{ user_nome if user_nome else 'Técnico' }}</p>
+            <p style="font-size: 0.8em; color: #888;">ID: 123456789</p>
         </div>
-
-        <div class="form-group">
-            <label>Equipamento</label>
-            <div class="readonly-field">
-                {{ nome }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Data Última Atualização</label>
-            <div class="readonly-field">
-                {{ data }}
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Resumo</label>
-            <div class="readonly-field" style="min-height: 100px; align-items: flex-start;">
-                {{ resumo }}
-            </div>
-        </div>
-
-        <button class="btn-primary">Nova Atualização</button>
-
+        <hr>
+        <a href="/index">Início</a>
+        <a href="/newAsset">Novo Ativo</a>
+        <a href="/login" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
     </div>
 
-    <p class="footer-text">SGA - Sistema de Gestão de Ativos</p>
+    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
+
+    <div class="main-container">
+        
+        <div class="logo-wrapper">
+            <div class="logo-circular">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
+            SGA - Sistema de Gestão de Ativos
+        </h2>
+
+        <div class="card-container" style="margin-top: 0; width: 100%; max-width: 450px;">
+            <h3 style="text-align: center; color: #555; margin-bottom: 20px;">Detalhes do Ativo</h3>
+            
+            <div class="form-group">
+                <label style="font-weight: bold;">ID do QRCODE</label>
+                <div class="readonly-field id-badge" style="background: #e7f1ff; color: #007bff; font-weight: bold; padding: 10px; border-radius: 5px; text-align: center; font-size: 1.2rem; border: 1px solid #b6d4fe;">
+                    {{ id_ativo }}
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label style="font-weight: bold;">Equipamento</label>
+                <div class="readonly-field" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    {{ nome }}
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label style="font-weight: bold;">Última Movimentação</label>
+                <div class="readonly-field" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    {{ data }}
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label style="font-weight: bold;">Resumo/Histórico de Manutenções</label>
+                <div class="readonly-field" style="background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 5px; height: 150px; overflow-y: auto; white-space: pre-line; text-align: left; font-size: 0.9em; line-height: 1.4;">
+                    {{ resumo }}
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="/newUpdate/{{ id_ativo }}" class="btn-link">
+                    <button type="button" class="btn-primary">Nova Atualização</button>
+                </a>
+                
+                <a href="/index" class="btn-link">
+                    <button type="button" class="btn-secondary">Voltar à Pesquisa</button>
+                </a>
+            </div>
+        </div>
+        
+        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
+    </div>
+
+    <script>
+        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
+        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
+    </script>
 
 </body>
 </html>

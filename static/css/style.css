@@ -1,117 +1,69 @@
-/* Configurações Gerais */
+/* ==========================================================================
+   1. CONFIGURAÇÕES GERAIS E RESET
+   ========================================================================== */
+* {
+    box-sizing: border-box; /* Garante que padding não quebre a largura */
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
-    margin: 0;
+    color: #1c1e21;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
+    padding: 20px;
 }
 
-/* Container do Login e do Card de Consulta */
-.card-container {
+/* ==========================================================================
+   2. LAYOUT E CONTAINERS
+   ========================================================================== */
+.main-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.card-container, .card-section {
     background: white;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 400px;
-    margin-top: 50px;
-}
-
-/* Estilização dos Inputs */
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-label {
-    display: block;
-    font-size: 13px;
-    color: #65676b;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 16px;
+    max-width: 450px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-/* Campos apenas de leitura (Consulta) */
-.readonly-field {
-    background-color: #f8f9fa;
-    border: 1px solid #eee;
-    padding: 10px;
-    border-radius: 6px;
-    min-height: 20px;
-}
-
-/* Botões */
-.btn-primary {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.btn-link {
-    background: none;
-    border: none;
-    color: #007bff;
-    font-size: 13px;
-    cursor: pointer;
-    text-decoration: underline;
-    margin-top: 15px;
-}
-
-
-/*Tela consult*/
-
-/* Configurações Gerais - Mantém o padrão do projeto */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-}
-
-h2 {
-    color: #1c1e21;
+.logo-wrapper {
     margin-bottom: 20px;
 }
 
-/* O "Card" centralizado - Responsivo */
-.card-container {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    box-sizing: border-box;    
+.logo-circular {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Grupos de formulário */
+.logo-circular img {
+    max-width: 85%;
+    height: auto;
+}
+
+/* ==========================================================================
+   3. FORMULÁRIOS E INPUTS
+   ========================================================================== */
 .form-group {
     margin-bottom: 15px;
     text-align: left;
@@ -125,159 +77,94 @@ label {
     margin-bottom: 5px;
 }
 
-/* Estilo para Inputs (Login) e Divs de Leitura (Consulta) */
-input, .readonly-field {
+input, textarea, .readonly-field {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
+    border-radius: 8px;
     font-size: 16px;
-    background-color: #fff;
+    font-family: inherit;
+    transition: border-color 0.3s;
 }
 
-/* Destaque para campos de leitura na tela de Consulta */
+input:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
 .readonly-field {
-    background-color: #f8f9fa; /* Cinza bem claro para indicar que não é editável */
+    background-color: #f8f9fa;
+    border: 1px solid #eee;
     min-height: 45px;
     display: flex;
     align-items: center;
 }
 
-/* Campo de ID em destaque (como você pediu) */
-.id-badge {
-    background-color: #e4e6eb;
-    font-family: monospace;
-    font-weight: bold;
-    color: #333;
+textarea {
+    resize: vertical;
 }
 
-/* Botão Principal */
-.btn-primary {
+/* ==========================================================================
+   4. COMPONENTES (BOTÕES, BADGES, DIVISORES)
+   ========================================================================== */
+.btn-primary, .btn-secondary, .btn-scanner {
     width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
     padding: 14px;
     border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
+    border: none;
+    transition: filter 0.3s, background 0.3s;
+    display: block;
+    text-align: center;
+    text-decoration: none;
     margin-top: 10px;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-}
+.btn-primary { background-color: #007bff; color: white; }
+.btn-primary:hover { background-color: #0056b3; }
 
-/* Rodapé informativo */
-.footer-text {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #999;
-}
+.btn-secondary { background-color: #dc3545; color: white; } /* Cor de Alerta/Voltar */
+.btn-secondary:hover { background-color: #a71d2a; }
 
-/* Estilo para campos de texto longo (textarea) */
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 16px;
-    font-family: inherit;
-    resize: vertical; /* Permite aumentar a altura, mas não a largura */
-}
+.btn-scanner { background-color: #343a40; color: white; gap: 10px; display: flex; justify-content: center; align-items: center; }
 
-/* Área onde o QR Code aparecerá após salvar */
-.display-qrcode-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 15px 0;
-    min-height: 150px; /* Garante que o espaço já exista antes da imagem */
-}
-
-.display-qrcode-area img {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 10px;
-}
-
-/* Estilo para o código numérico logo abaixo do QR */
-.id-display {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    letter-spacing: 3px;
-    background: #eee;
-    padding: 5px 15px;
-    border-radius: 4px;
-}
-
-/* Botão secundário (para Gerar e Imprimir) */
-.btn-secondary {
-    width: 100%;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-
-/* Adicione isso se quiser um destaque para o campo que não pode ser mudado */
-.label-info {
-    font-size: 14px;
-    font-weight: bold;
-    color: #1a73e8; /* Um azul para indicar informação do sistema */
-    margin-bottom: 10px;
+.btn-link {
+    text-decoration: none;
     display: block;
+    width: 100%;
 }
 
-/* Botão de destaque para abrir a câmera */
-.btn-scanner {
-    background-color: #343a40;
-    color: white;
-    display: flex;
-    align-items: center;
+.id-badge {
+    background-color: #e7f1ff;
+    color: #007bff;
+    font-family: monospace;
+    font-weight: bold;
     justify-content: center;
-    gap: 10px;
 }
 
-/* Divisória para separar a busca manual */
 .divider {
     display: flex;
     align-items: center;
-    text-align: center;
     margin: 20px 0;
     color: #888;
     font-size: 14px;
 }
-
 .divider::before, .divider::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid #ddd;
 }
+.divider:not(:empty)::before { margin-right: .5em; }
+.divider:not(:empty)::after { margin-left: .5em; }
 
-.divider:not(:empty)::before { margin-right: .25em; }
-.divider:not(:empty)::after { margin-left: .25em; }
-
-
-/* Configuração do Menu Lateral */
+/* ==========================================================================
+   5. MENU LATERAL (SIDENAV)
+   ========================================================================== */
 .sidenav {
     height: 100%;
-    width: 0; /* Começa fechado */
+    width: 0;
     position: fixed;
     z-index: 1000;
     top: 0;
@@ -289,9 +176,9 @@ textarea {
 }
 
 .sidenav a {
-    padding: 8px 32px;
+    padding: 10px 32px;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #818181;
     display: block;
     transition: 0.3s;
@@ -301,18 +188,16 @@ textarea {
 
 .sidenav .closebtn {
     position: absolute;
-    top: 0;
+    top: 10px;
     right: 25px;
     font-size: 36px;
-    margin-left: 50px;
 }
 
 .user-info {
-    padding: 0 32px 20px 32px;
+    padding: 0 32px 20px;
     color: white;
 }
 
-/* Posicionamento do Menu no topo esquerdo */
 .hamburger-icon {
     position: absolute;
     top: 20px;
@@ -320,54 +205,41 @@ textarea {
     font-size: 28px;
     cursor: pointer;
     color: #333;
-    z-index: 10; /* Garante que fique acima de tudo */
 }
 
-.logo-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+/* ==========================================================================
+   6. ÁREA DE IMPRESSÃO (QR CODE)
+   ========================================================================== */
+.printable-area {
+    text-align: center;
+    padding: 10px;
+}
+
+.id-display {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 3px;
+    background: #f0f0f0;
+    padding: 8px 20px;
+    border-radius: 6px;
+    display: inline-block;
     margin-top: 10px;
 }
 
-.logo-circular {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+@media print {
+    body * { visibility: hidden; }
+    .printable-area, .printable-area * { visibility: visible; }
+    .printable-area {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+    }
 }
 
-.logo-circular img {
-    max-width: 90%;
-    max-height: 90%;
-    height: auto;
-    width: auto;
-}
-
-/* Estilo dos Quadros (Cards) */
-.card-section {
-    background-color: #ffffff;
-    width: 100%;
-    max-width: 350px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    margin-bottom: 20px; /* Separação entre os dois quadros */
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-/* Container principal para centralizar os cards */
-.main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 80px; /* Espaço para o menu não cobrir o conteúdo */
-    gap: 20px; /* Espaço entre os cartões */
+.footer-text {
+    margin: 20px 0;
+    font-size: 12px;
+    color: #999;
 }
