@@ -1,42 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="bg-light">
+{% extends 'base.html' %}
 
-    <div class="main-container">
-        <div class="logo-wrapper">
-            <div class="logo-circular">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+{% block title %}SGA - Login{% endblock %}
+
+{% block content %}
+    <div class="card-container mt-15" style="max-width: 400px; margin-left: auto; margin-right: auto;">
+        <h2 class="page-title">Acesso ao Sistema</h2>
+        
+        {% if erro %}
+            <p style="color: #dc3545; font-weight: bold; margin-bottom: 15px; font-size: 0.9em;">
+                ⚠️ {{ erro }}
+            </p>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label>ID do Usuário</label>
+                <input type="text" name="id_usuario" placeholder="Digite seu ID" required>
             </div>
-        </div>
 
-        <div class="card-container">
-            <h2 style="margin-bottom: 20px;">Acesso ao Sistema</h2>
-            
-            {% if erro %}
-                <p style="color: #dc3545; font-weight: bold; margin-bottom: 15px;">{{ erro }}</p>
-            {% endif %}
+            <div class="form-group mt-15">
+                <label>Senha</label>
+                <input type="password" name="senha" placeholder="******" required>
+            </div>
 
-            <form action="/login" method="POST">
-                <div class="form-group">
-                    <label>ID do Usuário</label>
-                    <input type="text" name="id_usuario" placeholder="Digite seu ID" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" name="senha" placeholder="******" required>
-                </div>
-
-                <button type="submit" class="btn-primary">Entrar</button>
-            </form>
-        </div>
-        <p class="footer-text">SGA v1.0</p>
+            <button type="submit" class="btn-primary mt-15">
+                Entrar
+            </button>
+        </form>
     </div>
-</body>
-</html>
+{% endblock %}
+
+{% block scripts %}
+    // Login não precisa de scripts específicos por enquanto
+{% endblock %}

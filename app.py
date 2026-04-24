@@ -1,12 +1,24 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
 import random
 import qrcode
+from functools import wraps
 from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'sga_projeto_univesp_2026'
+
+# --- DECORATOR DE SEGURANÇA ---
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash("Por favor, faça login para acessar esta página.", "danger")
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # --- FUNÇÕES AUXILIARES ---
 
@@ -15,6 +27,7 @@ def conectar_banco():
     return sqlite3.connect(caminho_banco)
 
 def obter_usuario_logado():
+    """Retorna os dados do usuário para passar aos templates"""
     if 'user_id' in session:
         return {
             "nome": session.get('user_nome'),
@@ -33,15 +46,7 @@ def gerar_id_unico():
         if not existe:
             return novo_id
 
-# --- ROTAS ---
-
-@app.route('/')
-@app.route('/index')
-def index():
-    user = obter_usuario_logado()
-    if not user:
-        return redirect(url_for('login')) # BLOQUEIO
-    return render_template('index.html', user_nome=user['nome'], user_nivel=user['nivel'])
+# --- ROTAS DE ACESSO ---
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -59,32 +64,55 @@ def login():
             session['user_id'] = usuario[0]
             session['user_nome'] = usuario[1]
             session['user_nivel'] = usuario[2]
+            flash(f"Bem-vindo, {usuario[1]}!", "success")
             return redirect(url_for('index'))
         else:
-            return render_template('login.html', erro="ID ou Senha incorretos!")
+            flash("ID ou Senha incorretos!", "danger")
+            return redirect(url_for('login'))
 
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.clear()
+    flash("Sessão encerrada com sucesso.", "success")
     return redirect(url_for('login'))
 
+# --- ROTAS PROTEGIDAS (@login_required) ---
+
+@app.route('/')
+@app.route('/index')
+@login_required
+def index():
+    user = obter_usuario_logado()
+    return render_template('index.html', user_nome=user['nome'], user_nivel=user['nivel'])
+
 @app.route('/consult', methods=['POST'])
+@login_required
 def consult():
-    # Proteção rápida mesmo em rotas de processamento
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-        
     id_buscado = request.form.get('id_busca')
-    return redirect(url_for('consult_get', id_ativo=id_buscado))
+    
+    if not id_buscado:
+        flash("Introduza um ID para pesquisar.", "danger")
+        return redirect(url_for('index'))
+
+    # Validação Humana: Verifica se o código existe ANTES de redirecionar
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id_ativo FROM ativos WHERE id_ativo = ?", (id_buscado,))
+    existe = cursor.fetchone()
+    conn.close()
+
+    if existe:
+        return redirect(url_for('consult_get', id_ativo=id_buscado))
+    else:
+        flash(f"O código {id_buscado} não foi encontrado no sistema.", "danger")
+        return redirect(url_for('index'))
 
 @app.route('/consult/<id_ativo>')
+@login_required
 def consult_get(id_ativo):
     user = obter_usuario_logado()
-    if not user:
-        return redirect(url_for('login')) # BLOQUEIO
-
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute("SELECT id_ativo, nome, data_atualizacao, resumo FROM ativos WHERE id_ativo = ?", (id_ativo,))
@@ -99,13 +127,14 @@ def consult_get(id_ativo):
                                nome=resultado[1], 
                                data=resultado[2], 
                                resumo=resultado[3])
-    return redirect('/index?erro=inexistente')
+    
+    flash("Ativo não encontrado.", "danger")
+    return redirect(url_for('index'))
 
 @app.route('/newAsset', methods=['GET', 'POST'])
+@login_required
 def newAsset():
     user = obter_usuario_logado()
-    if not user:
-        return redirect(url_for('login')) # BLOQUEIO
     
     if request.method == 'POST':
         nome = request.form.get('equipamento')
@@ -128,6 +157,8 @@ def newAsset():
         conn.commit()
         conn.close()
 
+        flash(f"Ativo {id_gerado} cadastrado com sucesso!", "success")
+
         return render_template('newAsset.html', 
                                user_nome=user['nome'], 
                                user_nivel=user['nivel'],
@@ -141,11 +172,9 @@ def newAsset():
     return render_template('newAsset.html', user_nome=user['nome'], user_nivel=user['nivel'], sucesso=False)
 
 @app.route('/newUpdate/<id_ativo>')
+@login_required
 def newUpdate(id_ativo):
     user = obter_usuario_logado()
-    if not user:
-        return redirect(url_for('login')) # BLOQUEIO
-
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute("SELECT nome FROM ativos WHERE id_ativo = ?", (id_ativo,))
@@ -158,13 +187,13 @@ def newUpdate(id_ativo):
                                user_nivel=user['nivel'], 
                                id_ativo=id_ativo, 
                                nome=ativo[0])
-    return redirect('/index?erro=inexistente')
+    
+    flash("Ativo inexistente para atualização.", "danger")
+    return redirect(url_for('index'))
 
 @app.route('/saveUpdate', methods=['POST'])
+@login_required
 def saveUpdate():
-    if 'user_id' not in session:
-        return redirect(url_for('login')) # BLOQUEIO
-
     id_ativo = request.form.get('id_ativo')
     nova_data = request.form.get('data_escondida')
     novo_texto = request.form.get('resumo_atualizacao')
@@ -173,24 +202,26 @@ def saveUpdate():
     cursor = conn.cursor()
     cursor.execute("SELECT resumo FROM ativos WHERE id_ativo = ?", (id_ativo,))
     resultado = cursor.fetchone()
-    resumo_antigo = resultado[0] if resultado[0] else ""
+    
+    resumo_antigo = resultado[0] if resultado and resultado[0] else ""
     historico_atualizado = f"{nova_data}\n{novo_texto}\n\n{resumo_antigo}"
+    
     cursor.execute("UPDATE ativos SET resumo = ?, data_atualizacao = ? WHERE id_ativo = ?", 
                     (historico_atualizado, nova_data, id_ativo))
     conn.commit()
     conn.close()
     
+    flash("Histórico de manutenção atualizado!", "success")
     return redirect(url_for('consult_get', id_ativo=id_ativo))
+
+# --- CABEÇALHOS ANTI-CACHE ---
 
 @app.after_request
 def add_header(response):
-    """
-    Adiciona cabeçalhos para impedir que o navegador armazene cache das páginas.
-    Isso garante que, ao deslogar, o usuário não consiga voltar e ver os dados.
-    """
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
+
 if __name__ == '__main__':
-    app.run(debug=True)
+   app.run(debug=True, host='0.0.0.0', port=5000)

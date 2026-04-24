@@ -2,7 +2,7 @@
    1. CONFIGURAÇÕES GERAIS E RESET
    ========================================================================== */
 * {
-    box-sizing: border-box; /* Garante que padding não quebre a largura */
+    box-sizing: border-box; 
     margin: 0;
     padding: 0;
 }
@@ -125,7 +125,7 @@ textarea {
 .btn-primary { background-color: #007bff; color: white; }
 .btn-primary:hover { background-color: #0056b3; }
 
-.btn-secondary { background-color: #dc3545; color: white; } /* Cor de Alerta/Voltar */
+.btn-secondary { background-color: #dc3545; color: white; } 
 .btn-secondary:hover { background-color: #a71d2a; }
 
 .btn-scanner { background-color: #343a40; color: white; gap: 10px; display: flex; justify-content: center; align-items: center; }
@@ -242,4 +242,42 @@ textarea {
     margin: 20px 0;
     font-size: 12px;
     color: #999;
+}
+
+/* ==========================================================================
+   7. CLASSES REATORADAS (LIMPEZA DE HTML)
+   ========================================================================== */
+
+/* Substitui style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;" */
+.page-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+/* Substitui style="width: 100%; border-radius: 10px; margin-bottom: 15px; display: none; overflow: hidden; border: 2px solid #007bff;" */
+.scanner-display {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: none;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+/* Botão de Scanner Roxo (Substitui cores fixas no HTML) */
+.btn-purple {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    margin-bottom: 15px;
+}
+
+.btn-purple:hover {
+    background-color: #5a32a3 !important;
+}
+
+/* Classe de utilidade para espaçamento superior */
+.mt-15 {
+    margin-top: 15px;
 }

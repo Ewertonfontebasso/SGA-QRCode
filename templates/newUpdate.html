@@ -1,88 +1,51 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Nova Atualização</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="bg-light">
+{% extends 'base.html' %}
 
-    <div id="menuSide" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div class="user-info">
-        <p><strong>Usuário:</strong> {{ user_nome if user_nome else 'Técnico' }}</p>
-        <p style="font-size: 0.8em; color: #888;">Nível: {{ user_nivel if user_nivel else 'N/A' }}</p>
-        <p style="font-size: 0.7em; color: #555;">ID: 123456789</p>
-    </div>
-    <hr>
-    <a href="/index">Início</a>
-    <a href="/newAsset">Novo Ativo</a>
-    <a href="/logout" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
-</div>
+{% block title %}SGA - Nova Atualização{% endblock %}
 
-    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
+{% block content %}
+    <h2 class="page-title">SGA - Sistema de Gestão de Ativos</h2>
 
-    <div class="main-container">
-        <div class="logo-wrapper">
-            <div class="logo-circular">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+    <div class="card-container">
+        <form action="/saveUpdate" method="POST">
+            <input type="hidden" name="id_ativo" value="{{ id_ativo }}">
+
+            <div class="form-group">
+                <label>Equipamento</label>
+                <div class="readonly-field">
+                    {{ nome }} (ID: {{ id_ativo }})
+                </div>
             </div>
-        </div>
 
-       <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
-            SGA - Sistema de Gestão de Ativos
-        </h2>
+            <div class="form-group mt-15">
+                <label>Data da Atualização</label>
+                <input type="text" id="data_auto" class="readonly-field" readonly>
+                <input type="hidden" name="data_escondida" id="data_escondida">
+            </div>
 
-        <div class="card-container" style="max-width: 450px; width: 100%;">
-            <form action="/saveUpdate" method="POST">
-                <input type="hidden" name="id_ativo" value="{{ id_ativo }}">
+            <div class="form-group mt-15">
+                <label>Resumo da Manutenção / Alteração</label>
+                <textarea name="resumo_atualizacao" rows="6" placeholder="Descreva o que foi feito no equipamento..." required></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label style="font-weight: bold;">Equipamento</label>
-                    <div class="readonly-field" style="background: #f0f0f0; padding: 10px; border-radius: 5px;">
-                        {{ nome }} (ID: {{ id_ativo }})
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: bold;">Data da Atualização</label>
-                    <input type="text" id="data_auto" class="readonly-field" readonly 
-                           style="width: 100%; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 5px;">
-                    <input type="hidden" name="data_escondida" id="data_escondida">
-                </div>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: bold;">Resumo da Manutenção / Alteração</label>
-                    <textarea name="resumo_atualizacao" rows="6" placeholder="Descreva o que foi feito no equipamento..." required
-                              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
-                </div>
-
-                <button type="submit" class="btn-primary" style="margin-top: 20px;">Salvar Atualização</button>
-                
-                <div style="margin-top: 15px;">
-    <a href="/consult/{{ id_ativo }}" class="btn-link">
-        <button type="button" class="btn-secondary">
-            Cancelar e Voltar
-        </button>
-    </a>
-</div>
-            </form>
-        </div>
-        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
+            <button type="submit" class="btn-primary mt-15">Salvar Atualização</button>
+            
+            <div class="mt-15">
+                <a href="/consult/{{ id_ativo }}" class="btn-link">
+                    <button type="button" class="btn-secondary">
+                        Cancelar e Voltar
+                    </button>
+                </a>
+            </div>
+        </form>
     </div>
+{% endblock %}
 
-    <script>
-        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
-        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
-
-        function carregarDataAtualizacao() {
-            const agora = new Date();
-            const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('data_auto').value = formatada;
-            document.getElementById('data_escondida').value = formatada;
-        }
-        carregarDataAtualizacao();
-    </script>
-</body>
-</html>
+{% block scripts %}
+    function carregarDataAtualizacao() {
+        const agora = new Date();
+        const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('data_auto').value = formatada;
+        document.getElementById('data_escondida').value = formatada;
+    }
+    carregarDataAtualizacao();
+{% endblock %}

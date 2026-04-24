@@ -1,73 +1,90 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Sistema de Gestão de Ativos</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="bg-light">
+{% extends 'base.html' %}
 
-    <div id="menuSide" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <div class="user-info">
-            <p><strong>Usuário:</strong> {{ user_nome }}</p>
-            <p style="font-size: 0.8em; color: #888;">Nível: {{ user_nivel }}</p>
-            <p style="font-size: 0.7em; color: #555;">ID: 123456789</p>
-        </div>
-        <hr>
-        <a href="/index">Início</a>
-        <a href="/newAsset">Novo Ativo</a>
-        <a href="/logout" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
+{% block title %}SGA - Início{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">SGA - Sistema de Gestão de Ativos</h2>
+
+    <div class="card-section">
+        <a href="/newAsset" class="btn-link">
+            <button class="btn-primary">Cadastrar novo Equipamento</button>
+        </a>
     </div>
 
-    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
-
-    <div class="main-container">
+    <div class="card-section">
+        <div id="reader" class="scanner-display"></div>
         
-        <div class="logo-wrapper">
-            <div class="logo-circular">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+        <button id="btn-scan" class="btn-primary btn-purple">
+            📷 Escanear QR CODE
+        </button>
+
+        <form action="/consult" method="POST" id="form-busca">
+            <div class="form-group">
+                <label>Código do Ativo</label>
+                <input type="text" id="id_busca" name="id_busca" inputmode="numeric" maxlength="5" required 
+                       placeholder="Digite ou escaneie o ID">
             </div>
-        </div>
-
-        <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
-            SGA - Sistema de Gestão de Ativos
-        </h2>
-
-        <div class="card-section">
-            <a href="/newAsset" style="text-decoration: none; width: 100%;">
-                <button class="btn-primary">Cadastrar novo Equipamento</button>
-            </a>
-        </div>
-
-        <div class="card-section">
-            <button class="btn-primary" onclick="abrirCamera()" style="margin-bottom: 15px;">
-                Ler QRCODE
-            </button>
-
-            <form action="/consult" method="POST">
-                <div class="form-group" style="text-align: left;">
-                    <label style="font-weight: bold; color: #555; font-size: 0.9em;">Código do Ativo</label>
-                    <input type="text" name="id_busca" inputmode="numeric" maxlength="5" required 
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;">
-                </div>
-                <button type="submit" class="btn-primary" style="margin-top: 15px;">Pesquisar Código</button>
-            </form>
-        </div>
-
-        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
+            <button type="submit" class="btn-primary mt-15">Pesquisar Código</button>
+        </form>
     </div>
+{% endblock %}
 
-    <script>
-        function abrirCamera() { alert("Acessando a câmera..."); }
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('erro') === 'inexistente') {
-            alert("Código inexistente!");
-            window.history.replaceState({}, document.title, "/index");
+{% block scripts %}
+    const html5QrCode = new Html5Qrcode("reader");
+    const btnScan = document.getElementById('btn-scan');
+    const readerDiv = document.getElementById('reader');
+    const inputBusca = document.getElementById('id_busca');
+    const formBusca = document.getElementById('form-busca');
+
+    btnScan.addEventListener('click', () => {
+        if (readerDiv.style.display === 'none') {
+            readerDiv.style.display = 'block';
+            btnScan.innerText = "❌ Parar Escaneamento";
+            btnScan.style.backgroundColor = "#dc3545"; 
+            
+            html5QrCode.start(
+                { facingMode: "environment" }, 
+                { 
+                    fps: 10, 
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0 
+                },
+                (decodedText) => {
+                    inputBusca.value = decodedText;
+                    pararCamera();
+                    formBusca.submit(); 
+                },
+                (errorMessage) => { }
+            ).catch((err) => {
+                console.error("Erro ao acessar câmera:", err);
+                alert("Não foi possível acessar a câmera. Verifique as permissões.");
+                pararCamera();
+            });
+        } else {
+            pararCamera();
         }
-        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
-        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
-    </script>
-</body>
-</html>
+    });
+
+    function pararCamera() {
+        if (html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                readerDiv.style.display = 'none';
+                btnScan.innerText = "📷 Escanear QR CODE";
+                // Aqui o JS volta para a cor roxa definida na classe .btn-purple
+                btnScan.style.backgroundColor = "#6f42c1"; 
+            }).catch((err) => console.warn("Erro ao finalizar scanner:", err));
+        } else {
+            readerDiv.style.display = 'none';
+            btnScan.innerText = "📷 Escanear QR CODE";
+            btnScan.style.backgroundColor = "#6f42c1";
+        }
+    }
+
+    window.onload = () => {
+        const url = new URL(window.location);
+        if (url.searchParams.has('erro')) {
+            url.searchParams.delete('erro');
+            window.history.replaceState({}, document.title, url.pathname);
+        }
+    };
+{% endblock %}

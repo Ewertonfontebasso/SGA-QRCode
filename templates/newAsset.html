@@ -1,129 +1,92 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGA - Novo Cadastro</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="bg-light">
+{% extends 'base.html' %}
 
-   <div id="menuSide" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div class="user-info">
-        <p><strong>Usuário:</strong> {{ user_nome if user_nome else 'Técnico' }}</p>
-        <p style="font-size: 0.8em; color: #888;">Nível: {{ user_nivel if user_nivel else 'N/A' }}</p>
-        <p style="font-size: 0.7em; color: #555;">ID: 123456789</p>
-    </div>
-    <hr>
-    <a href="/index">Início</a>
-    <a href="/newAsset">Novo Ativo</a>
-    <a href="/logout" style="color: #ff4d4d; margin-top: 50px;">Deslogar</a>
-</div>
+{% block title %}SGA - Novo Cadastro{% endblock %}
 
-    <span class="hamburger-icon" onclick="openNav()">&#9776;</span>
+{% block content %}
+    <h2 class="page-title">SGA - Sistema de Gestão de Ativos</h2>
 
-    <div class="main-container">
-        <div class="logo-wrapper">
-            <div class="logo-circular">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo SGA">
+    <div class="card-container">
+        <form action="/newAsset" method="POST">
+            <div class="form-group">
+                <label>Equipamento</label>
+                <input type="text" name="equipamento" placeholder="Nome do ativo" 
+                       value="{{ nome if nome else '' }}" {{ 'readonly' if sucesso }} required>
             </div>
-        </div>
 
-        <h2 style="text-align: center; color: #333; margin-bottom: 25px; font-weight: bold;">
-            SGA - Sistema de Gestão de Ativos
-        </h2>
+            <div class="form-group mt-15">
+                <label>Data</label>
+                <input type="text" id="data_dispositivo" class="readonly-field" value="{{ data if data else '' }}" readonly>
+                <input type="hidden" name="data_escondida" id="data_escondida">
+            </div>
 
-        <div class="card-container" style="margin-top: 0; width: 100%; max-width: 450px;">
-            <form action="/newAsset" method="POST">
-                <div class="form-group">
-                    <label style="font-weight: bold;">Equipamento</label>
-                    <input type="text" name="equipamento" placeholder="Nome do ativo" 
-                           value="{{ nome if nome else '' }}" {{ 'readonly' if sucesso }} required
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;">
+            <div class="form-group mt-15">
+                <label>Descrição Técnica</label>
+                <textarea name="descricao" rows="4" placeholder="Relatório técnico..." {{ 'readonly' if sucesso }}>{{ descricao if descricao else '' }}</textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="printable-area">
+                <label style="display: block; color: #555;">
+                    {{ 'Identificação Gerada' if sucesso else 'Aguardando Identificação' }}
+                </label>
+                
+                <div class="display-qrcode-area" style="text-align: center; margin: 15px 0;">
+                    {% if sucesso %}
+                        <img src="{{ qr_code }}" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #eee; padding: 5px;">
+                    {% else %}
+                        <div style="color: #ccc; font-size: 14px; padding: 40px; border: 2px dashed #eee; border-radius: 10px;">
+                            O QR Code aparecerá aqui após salvar
+                        </div>
+                    {% endif %}
                 </div>
 
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: bold;">Data</label>
-                    <input type="text" id="data_dispositivo" class="readonly-field" value="{{ data if data else '' }}" readonly
-                           style="width: 100%; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 5px;">
-                    <input type="hidden" name="data_escondida" id="data_escondida">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <span class="id-display" style="font-size: 2.2rem; color: #007bff;">
+                        {{ id_ativo if id_ativo else '00000' }}
+                    </span>
                 </div>
+            </div>
 
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: bold;">Descrição Técnica</label>
-                    <textarea name="descricao" rows="4" placeholder="Relatório técnico..." {{ 'readonly' if sucesso }}
-                              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">{{ descricao if descricao else '' }}</textarea>
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-
-                <div class="printable-area">
-                    <label style="text-align: center; display: block; font-weight: bold; color: #555;">
-                        {{ 'Identificação Gerada' if sucesso else 'Aguardando Identificação' }}
-                    </label>
-                    
-                    <div class="display-qrcode-area" style="text-align: center; margin: 15px 0;">
-                        {% if sucesso %}
-                            <img src="{{ qr_code }}" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #eee; padding: 5px;">
-                        {% else %}
-                            <div style="color: #ccc; font-size: 14px; padding: 40px; border: 2px dashed #eee; border-radius: 10px;">
-                                O QR Code aparecerá aqui após salvar
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <span class="id-display" style="font-size: 2.2rem; font-weight: bold; color: #007bff; letter-spacing: 2px;">
-                            {{ id_ativo if id_ativo else '00000' }}
-                        </span>
-                    </div>
-                </div>
-                {% if not sucesso %}
-                    <button type="submit" class="btn-primary">Salvar Equipamento</button>
-                    <div style="margin-top: 10px;">
-                        <a href="/index" class="btn-link">
-                            <button type="button" class="btn-secondary">Cancelar e Voltar</button>
-                        </a>
-                    </div>
-                {% endif %}
-            </form>
-            
-            {% if sucesso %}
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                    <button class="btn-primary" style="background-color: #28a745;" onclick="window.print()">
-                        Imprimir Etiqueta
-                    </button>
-                    
-                    <a href="/newAsset" class="btn-link">
-                        <button type="button" class="btn-primary" style="background-color: #6c757d;">
-                            + Novo Cadastro
-                        </button>
-                    </a>
-
+            {% if not sucesso %}
+                <button type="submit" class="btn-primary">Salvar Equipamento</button>
+                <div class="mt-15">
                     <a href="/index" class="btn-link">
-                        <button type="button" class="btn-secondary">Voltar ao Menu</button>
+                        <button type="button" class="btn-secondary">Cancelar e Voltar</button>
                     </a>
                 </div>
             {% endif %}
-        </div>
-        <p class="footer-text" style="margin-top: 20px; opacity: 0.6;">SGA v1.0</p>
+        </form>
+        
+        {% if sucesso %}
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <button class="btn-primary" style="background-color: #28a745;" onclick="window.print()">
+                    🖨️ Imprimir Etiqueta
+                </button>
+                
+                <a href="/newAsset" class="btn-link">
+                    <button type="button" class="btn-primary" style="background-color: #6c757d;">
+                        + Novo Cadastro
+                    </button>
+                </a>
+
+                <a href="/index" class="btn-link">
+                    <button type="button" class="btn-secondary">Voltar ao Menu</button>
+                </a>
+            </div>
+        {% endif %}
     </div>
+{% endblock %}
 
-    <script>
-        function openNav() { document.getElementById("menuSide").style.width = "250px"; }
-        function closeNav() { document.getElementById("menuSide").style.width = "0"; }
-
-        function atualizarData() {
-            const campoData = document.getElementById('data_dispositivo');
-            if (campoData && campoData.value === "") {
-                const agora = new Date();
-                const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                campoData.value = formatada;
-                document.getElementById('data_escondida').value = formatada;
-            }
+{% block scripts %}
+    function atualizarData() {
+        const campoData = document.getElementById('data_dispositivo');
+        if (campoData && campoData.value === "") {
+            const agora = new Date();
+            const formatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            campoData.value = formatada;
+            document.getElementById('data_escondida').value = formatada;
         }
-        atualizarData();
-    </script>
-</body>
-</html>
+    }
+    atualizarData();
+{% endblock %}
